@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyze Job - AI Fake Job Detector</title>
+
+    <style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f7fb;
+    color: #333;
+}
+
+
+
+    .navbar {
+        background: #182848;
+        color: white;
+        padding: 18px 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .navbar h2 { font-size: 21px; }
+
+    .navbar-links {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-links a {
+        color: white;
+        text-decoration: none;
+        margin-left: 25px;
+        font-size: 15px;
+    }
+
+    .navbar-links a:hover { color: #00d4ff; }
+
+    /* ================= ANALYSIS SECTION ================= */
+
+.analysis-section {
+    width: 90%;
+    max-width: 900px;
+
+    margin: 60px auto;
+}
+
+.analysis-box {
+    background: white;
+
+    padding: 35px;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,0.08);
+}
+
+.analysis-box h2 {
+    text-align: center;
+
+    color: #182848;
+
+    margin-bottom: 10px;
+}
+
+.analysis-box .subtitle {
+    text-align: center;
+
+    color: #666;
+
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-weight: bold;
+
+    color: #333;
+}
+
+input,
+textarea {
+    width: 100%;
+
+    padding: 13px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 7px;
+
+    font-size: 15px;
+
+    transition: 0.2s;
+}
+
+textarea {
+    min-height: 120px;
+
+    resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+
+    border-color: #182848;
+
+    box-shadow:
+        0 0 0 2px rgba(24,40,72,0.08);
+}
+
+.analyze-btn {
+    width: 100%;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #182848;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.analyze-btn:hover {
+    background: #243b65;
+}
+
+.required {
+    color: red;
+}
+    footer {
+        background: #111c35;
+        color: white;
+        text-align: center;
+        padding: 25px;
+    }
+
+    footer p { margin: 5px; }
+
+    @media (max-width: 650px) {
+        .navbar {
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px 20px;
+        }
+
+        .navbar-links {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .navbar-links a {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .analysis-box { padding: 22px; }
+    }
+
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar"> 
+<h2> 🤖 AI Fake Job Detector </h2> 
+<div class="navbar-links"> 
+    <a href="/"> 🏠Home </a>
+    <a href="/about">ℹ️ About Us</a>
+    <a href="/analyze"> 🔍Analyze Job </a>
+     <a href="/dashboard"> 🕒Dashboard </a> 
+     <a href="/history"> ⌛History </a>
+     <a href="/contact">📞 Contact </a> 
+
+      {% if session.get("user_id") %}
+     <a class=" btn btn-primary ms-2 nav-link text-danger" href="/logout" style="color: #df0d0d;"> Logout </a>
+     {% else %}
+     <a class="btn btn-primary ms-2" href="/login" style="color: #df0d0d;"> Login </a>
+     {% endif %}
+    </div> 
+</nav>
+
+<!-- =========================================================
+     JOB ANALYSIS FORM
+========================================================= -->
+
+<section
+    class="analysis-section"
+    id="analysis"
+>
+
+
+<div class="analysis-box">
+
+    <h2>
+        🔍 Analyze Job / Internship
+    </h2>
+
+    <p class="subtitle">
+        Enter the job details below to check for possible fraud.
+    </p>
+
+
+    
+
+    <form
+        action="/analyze"
+        method="POST"
+    >
+
+
+        <!-- JOB TITLE -->
+
+        <div class="form-group">
+
+            <label for="job_title">
+
+                Job Title
+
+                <span class="required">
+                    *
+                </span>
+
+            </label>
+
+            <input
+                type="text"
+                id="job_title"
+                name="job_title"
+                placeholder="Example: Software Developer Intern"
+                required
+            >
+
+        </div>
+
+
+        <!-- COMPANY NAME -->
+
+        <div class="form-group">
+
+            <label for="company_name">
+
+                Company Name
+
+                <span class="required">
+                    *
+                </span>
+
+            </label>
+
+            <input
+                type="text"
+                id="company_name"
+                name="company_name"
+                placeholder="Example: ABC Technologies"
+                required
+            >
+
+        </div>
+
+
+        <!-- JOB DESCRIPTION -->
+
+        <div class="form-group">
+
+            <label for="job_description">
+
+                Job Description
+
+                <span class="required">
+                    *
+                </span>
+
+            </label>
+
+            <textarea
+                id="job_description"
+                name="job_description"
+                placeholder="Enter complete job description..."
+                required
+            ></textarea>
+
+        </div>
+
+
+        <!-- REQUIREMENTS -->
+
+        <div class="form-group">
+
+            <label for="requirements">
+
+                Requirements
+
+            </label>
+
+            <textarea
+                id="requirements"
+                name="requirements"
+                placeholder="Example: Python, Java, SQL, communication skills..."
+            ></textarea>
+
+        </div>
+
+
+        <!-- SALARY -->
+
+        <div class="form-group">
+
+            <label for="salary">
+
+                Salary / Salary Range
+
+            </label>
+
+            <input
+                type="text"
+                id="salary"
+                name="salary"
+                placeholder="Example: ₹20,000 - ₹30,000 per month"
+            >
+
+        </div>
+
+
+        <!-- SUBMIT -->
+
+        <button
+            type="submit"
+            class="analyze-btn"
+        >
+            🔍 Analyze Job
+        </button>
+
+
+    </form>
+
+</div>
+
+
+</section>
+
+<footer>
+    <p>© 2026 AI-Based Fake Job and Internship Detection System</p>
+    <p>Developed using Python, Flask, TF-IDF & Random Forest</p>
+</footer>
+
+</body>
+</html>

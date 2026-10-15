@@ -1,0 +1,5 @@
+.venv/
+.vs/
+*.pkl
+jobs.db
+__pycache__/

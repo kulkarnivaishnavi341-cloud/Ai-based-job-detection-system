@@ -1,0 +1,628 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>History- AI Fake Job Detector</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            background: #f4f7fb;
+            color: #333;
+        }
+
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+
+            background: #182848;
+
+            color: white;
+
+            padding: 18px 40px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+
+        .navbar h2 {
+            font-size: 22px;
+        }
+
+
+        .navbar a {
+
+            color: white;
+
+            text-decoration: none;
+
+            margin-left: 25px;
+
+            font-size: 15px;
+        }
+
+
+        .navbar a:hover {
+            color: #00d4ff;
+        }
+
+
+        /* ================= CONTAINER ================= */
+
+        .container {
+
+            width: 95%;
+
+            max-width: 1200px;
+
+            margin: 40px auto;
+        }
+
+
+        /* ================= TITLE ================= */
+
+        .page-title {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+
+        .page-title h1 {
+
+            color: #182848;
+
+            margin-bottom: 8px;
+        }
+
+
+        .page-title p {
+            color: #666;
+        }
+
+
+        /* ================= TABLE BOX ================= */
+
+        .table-box {
+
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.08);
+
+            overflow-x: auto;
+        }
+
+
+        /* ================= TABLE ================= */
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 900px;
+        }
+
+
+        th {
+
+            background: #182848;
+
+            color: white;
+
+            padding: 14px;
+
+            text-align: center;
+        }
+
+
+        td {
+
+            padding: 13px;
+
+            border-bottom: 1px solid #ddd;
+
+            text-align: center;
+        }
+
+
+        tr:hover {
+            background: #f5f7fa;
+        }
+
+
+        /* ================= RESULT ================= */
+
+        .fake {
+
+            color: #d00000;
+
+            font-weight: bold;
+        }
+
+
+        .genuine {
+
+            color: #008000;
+
+            font-weight: bold;
+        }
+
+
+        /* ================= RISK ================= */
+
+        .high-risk {
+
+            color: #d00000;
+
+            font-weight: bold;
+        }
+
+
+        .medium-risk {
+
+            color: #b36b00;
+
+            font-weight: bold;
+        }
+
+
+        .low-risk {
+
+            color: #087f23;
+
+            font-weight: bold;
+        }
+
+
+        /* ================= SCORE ================= */
+
+        .score {
+
+            font-weight: bold;
+        }
+
+
+        /* ================= NO DATA ================= */
+
+        .no-data {
+
+            text-align: center;
+
+            padding: 40px;
+
+            color: #666;
+
+            font-size: 18px;
+        }
+
+
+        /* ================= BUTTON ================= */
+
+        .buttons {
+
+            text-align: center;
+
+            margin-top: 25px;
+        }
+
+
+        .btn {
+
+            display: inline-block;
+
+            padding: 12px 25px;
+
+            background: #182848;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 7px;
+
+            font-weight: bold;
+
+            margin: 5px;
+        }
+
+
+        .btn:hover {
+
+            background: #243b65;
+        }
+
+
+        /* ================= FOOTER ================= */
+
+        footer {
+
+            text-align: center;
+
+            margin-top: 40px;
+
+            padding: 20px;
+
+            background: #182848;
+
+            color: white;
+        }
+
+
+        footer p {
+            margin: 5px;
+        }
+
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 768px) {
+
+            .navbar {
+
+                padding: 15px 20px;
+
+                flex-direction: column;
+
+                gap: 10px;
+            }
+
+
+            .navbar a {
+
+                margin-left: 10px;
+            }
+
+
+            .container {
+
+                width: 94%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="navbar"> 
+<h2> 🤖 AI Fake Job Detector </h2> 
+<div class="navbar-links"> 
+     <a href="/"> 🏠Home </a>
+    <a href="/about">ℹ️ About Us</a>
+    <a href="/analyze"> 🔍Analyze Job </a>
+     <a href="/dashboard"> 🕒Dashboard </a> 
+     <a href="/history"> ⌛History </a>
+     <a href="/contact">📞 Contact </a>  
+
+      {% if session.get("user_id") %}
+     <a class=" btn btn-primary ms-2 nav-link text-danger" href="/logout" style="color: #df0d0d;"> Logout </a>
+     {% else %}
+     <a class="btn btn-primary ms-2" href="/login" style="color: #df0d0d;"> Login </a>
+     {% endif %}
+    </div> 
+</nav>
+
+    <!-- ================= MAIN ================= -->
+
+    <div class="container">
+
+
+        <!-- TITLE -->
+
+        <div class="page-title">
+
+            <h1>
+                📋 Job Analysis History
+            </h1>
+
+            <p>
+                Previously analyzed job and internship opportunities
+            </p>
+
+        </div>
+
+
+
+        <!-- ================= TABLE ================= -->
+
+        <div class="table-box">
+
+
+            {% if analyses %}
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Job Title
+                        </th>
+
+                        <th>
+                            Company
+                        </th>
+
+                        <th>
+                            Prediction
+                        </th>
+
+                        <th>
+                            Fake Probability
+                        </th>
+
+                        <th>
+                            Risk Score
+                        </th>
+
+                        <th>
+                            Risk Level
+                        </th>
+
+                        <th>
+                            Suspicious Indicators
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                    {% for analysis in analyses %}
+
+
+                    <tr>
+
+
+                        <!-- ID -->
+
+                        <td>
+                            {{ analysis["id"] }}
+                        </td>
+
+
+
+                        <!-- JOB TITLE -->
+
+                        <td>
+                            {{ analysis["job_title"] }}
+                        </td>
+
+
+
+                        <!-- COMPANY -->
+
+                        <td>
+                            {{ analysis["company_name"] }}
+                        </td>
+
+
+
+                        <!-- PREDICTION -->
+
+                        <td>
+
+                            {% if analysis["prediction"] == "FAKE / SUSPICIOUS" %}
+
+                                <span class="fake">
+                                    🚨 FAKE / SUSPICIOUS
+                                </span>
+
+                            {% else %}
+
+                                <span class="genuine">
+                                    ✅ GENUINE
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+
+                        <!-- FAKE PROBABILITY -->
+
+                        <td class="score">
+
+                            {{ analysis["fake_probability"] }}%
+
+                        </td>
+
+
+
+                        <!-- RISK SCORE -->
+
+                        <td class="score">
+
+                            {{ analysis["risk_score"] }}%
+
+                        </td>
+
+
+
+                        <!-- RISK LEVEL -->
+
+                        <td>
+
+                            {% if analysis["risk_level"] == "HIGH RISK" %}
+
+                                <span class="high-risk">
+                                    🔴 HIGH RISK
+                                </span>
+
+                            {% elif analysis["risk_level"] == "MEDIUM RISK" %}
+
+                                <span class="medium-risk">
+                                    🟠 MEDIUM RISK
+                                </span>
+
+                            {% else %}
+
+                                <span class="low-risk">
+                                    🟢 LOW RISK
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+
+                        <!-- SUSPICIOUS INDICATORS -->
+
+                        <td>
+
+                            {% if analysis["suspicious_indicators"] %}
+
+                                {{ analysis["suspicious_indicators"] }}
+
+                            {% else %}
+
+                                <span>
+                                    None
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            {{ analysis["analysis_date"] }}
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+            {% else %}
+
+
+                <div class="no-data">
+
+                    📭 No job analysis found.
+
+                    <br><br>
+
+                    Analyze your first job to see the history here.
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+
+        <!-- ================= BUTTONS ================= -->
+
+        <div class="buttons">
+
+            <a
+                href="/dashboard"
+                class="btn"
+            >
+                🔍 Analyze New Job
+            </a>
+
+
+            <a
+                href="/"
+                class="btn"
+            >
+                🏠 Home
+            </a>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p>
+            © 2026 AI-Based Fake Job and Internship Detection System
+        </p>
+
+
+        <p>
+            Developed using Python, Flask, SQLite, TF-IDF & Random Forest
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>
+

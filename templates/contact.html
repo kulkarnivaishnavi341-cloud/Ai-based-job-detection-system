@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - AI Fake Job Detector</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+   
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #333;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            background: #182848;
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            font-size: 22px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 15px;
+        }
+
+        .navbar a:hover {
+            color: #00d4ff;
+        }
+
+        /* ================= MAIN CONTAINER ================= */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 60px auto;
+            background: white;
+            padding: 50px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        /* ================= FLASH MESSAGE ================= */
+        .alert {
+            padding: 15px;
+            background: #d8f5d8;
+            color: #008000;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* ================= 3-COLUMN CONTACT GRID ================= */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1.3fr;
+            gap: 40px;
+        }
+
+        /* --- COLUMN 1: GET IN TOUCH --- */
+        .col-get-in-touch h1 {
+            color: #182848;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .col-get-in-touch h3 {
+            font-size: 18px;
+            color: #222;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .col-get-in-touch p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* SOCIAL ICONS (गोल ग्रे बॅकग्राउंडसह) */
+       /* सोशल मीडिया बॉक्सची रचना */
+.social-icons {
+    display: flex;
+    gap: 15px; /* आयकॉन्समधील अंतर */
+    margin-top: 25px;
+}
+
+/* मूळ डिझाइननुसार गोल ग्रे (फिकट राखाडी) बटन्स */
+.social-icons a {
+    width: 40%;
+    height: 80px;
+    background: #26aaec; /* फिकट राखाडी रंग */
+    color: #15032b;     /* आयकॉनचा मूळ रंग */
+    border-radius: 100%; /* पूर्ण गोल करण्यासाठी */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.3s ease; /* स्मूथ इफेक्टसाठी */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* माऊस नेल्यावर (Hover) होणारा बदल - मूळ थीमशी मॅचिंग */
+.social-icons a:hover {
+    background: #182848; /* तुमच्या प्रोजेक्टचा गडद निळा रंग */
+    color: #00d4ff;     /* लाइट ब्लू / सायनाईड हायलाईट */
+    transform: translateY(-3px); /* थोडं वर उचलण्याचा इफेक्ट */
+    box-shadow: 0 4px 10px rgba(24, 40, 72, 0.3);
+}
+
+        /* --- COLUMN 2: INFO DETAILS --- */
+        .col-info h4 {
+            color: #182848;
+            font-size: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            margin-top: 5px;
+        }
+
+        .col-info p {
+            color: #555;
+            font-size: 14.5px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* --- COLUMN 3: INPUT FORM --- */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+            color: #333;
+        }
+
+        .form-control:focus {
+            border-color: #182848;
+            outline: none;
+        }
+
+        textarea.form-control {
+            resize: none;
+        }
+
+        /* SUBMIT BUTTON (डिझाइननुसार लंबगोळ/Pill आकाराचे) */
+        .btn-submit {
+            padding: 12px 40px;
+            background: #46f1c7;
+            color: #032533;
+            border: 2px solid #182848;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: #182848;
+            color: white;
+        }
+
+        /* ================= FOOTER ================= */
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            background: #182848;
+            color: white;
+        }
+
+        /* ================= RESPONSIVE DESIGN ================= */
+        @media (max-width: 992px) {
+            .contact-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .col-get-in-touch {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .col-get-in-touch {
+                grid-column: span 1;
+            }
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            .navbar a {
+                margin: 0 10px;
+            }
+            .container {
+                width: 94%;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar"> 
+    <h2> 🤖 AI Fake Job Detector </h2> 
+    <div class="navbar-links"> 
+        <a href="/"> 🏠Home </a>
+        <a href="/analyze"> 🔍Analyze Job </a>
+        <a href="/dashboard"> 📊Dashboard </a> 
+        <a href="/history"> ⌛History </a> 
+        <a href="/about"> ℹ️ About Us </a>
+        <a href="/contact"> 📞 Contact </a>
+    </div> 
+</nav>
+
+<!-- ================= MAIN CONTAINER ================= -->
+<div class="container">
+
+    <!-- FLASH MESSAGES FROM FLASK -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="contact-grid">
+        
+        <!-- COLUMN 1: GET IN TOUCH -->
+        <div class="col-get-in-touch">
+            <h1>Get In Touch</h1>
+        <p>Have queries, feedback, or found a bug? Drop us a message!</p>
+          
+
+            
+<div class="map-container">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d475.7291637041504!2d75.20925738961759!3d17.467690592947168!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc6a77308a06b9f%3A0x96d2eb7c070489c3!2z4KSr4KWF4KSs4KSf4KWH4KSVIOCkleClieCksuClh-CknCDgpJHgpKsg4KSH4KSC4KSc4KS_4KSo4KS_4KSv4KSw4KS_4KSC4KSXLCDgpLjgpL7gpILgpJfgpYvgpLLgpL4!5e0!3m2!1smr!2sin!4v1791566563344!5m2!1smr!2sin" 
+    width="400" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+</div>
+<!-- social media icons -->
+<div class="social-icons">
+ 
+    
+    <a href="https://www.instagram.com/vaishu_kulkarni004?rpxt=MTh6aGxseWo3dXA4YQ==" target="_blank" title="Instagram"><h5>Instagram</h5></a>
+    <a href="https://www.linkedin.com/in/vaishnavi-kulkarni-438829317/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"><h5>LinkedIn</h5></i></a>
+    <a href="https://github.com/kulkarnivaishnavi341-cloud" target="_blank" title="GitHub"><i class="fab fa-github"><h5>GitHub</h5></i></a>
+
+</div>
+        </div>
+
+        <!-- COLUMN 2: INFO DETAILS -->
+        <div class="col-info">
+            <h4>Call Us</h4>
+            <p>+91 8669002407 <br>+91 7028058634  <br>+91 9028584566 <br>+91 7821081496</p>
+
+            <h4>Location</h4>
+            <p>Gat No. 565/1, Pandharpur Road, Sangola, District - Solapur, Maharashtra - 413307</p>
+
+            <h4>Mail Id</h4>
+            <p>kulkarnivaishnavi341@gmail.com <br> monikamalame1212@gmail.com 
+                <br>hnimbalkar@gmail.com <br>shraddhavavare26@gmail.com</p>
+        </div>
+
+        <!-- COLUMN 3: INPUT FORM -->
+         
+        <div class="col-form">
+            <h1>Contact Us</h1><br>
+            <form action="/contact" method="POST">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="name" placeholder="Enter your Name" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" class="form-control" name="email" placeholder="Enter a valid email address" required>
+                </div>
+                
+                <div class="form-group">
+                    <textarea class="form-control" name="message" rows="5" placeholder="Enter your message" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn-submit">Submit</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+
+        <p>
+            © 2026 AI-Based Fake Job and Internship Detection System
+        </p>
+
+
+        <p>
+            Developed using Python, Flask, SQLite, TF-IDF & Random Forest
+        </p>
+
+    </footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Enquiries - Admin Panel</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --sidebar-bg: #1e293b;
+            --sidebar-hover: #334155;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #3b82f6;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border-color: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; }
+        
+        /* --- SIDEBAR --- */
+        .sidebar { width: 260px; background-color: var(--sidebar-bg); color: #ffffff; display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; }
+        .sidebar-brand { padding: 24px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-brand i { color: var(--primary); }
+        .sidebar-menu { list-style: none; padding: 20px 0; flex-grow: 1; }
+        .sidebar-menu li a { display: flex; align-items: center; gap: 15px; padding: 14px 24px; color: #cbd5e1; text-decoration: none; font-weight: 500; font-size: 15px; }
+        .sidebar-menu li a:hover, .sidebar-menu li.active a { background-color: var(--sidebar-hover); color: #ffffff; }
+        .sidebar-menu li.active a { border-left: 4px solid var(--primary); padding-left: 20px; }
+        .sidebar-footer { padding: 20px 24px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .logout-btn { display: flex; align-items: center; gap: 10px; color: #ef4444; text-decoration: none; font-weight: 600; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { margin-left: 260px; flex-grow: 1; padding: 40px; }
+        .header { margin-bottom: 35px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .header h1 { font-size: 28px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+        .header h1 i { color: var(--warning); }
+        
+        /* --- FLASH MESSAGES --- */
+        .flash-container { margin-bottom: 25px; }
+        .flash-item { padding: 14px 20px; background-color: #ecfdf5; border-left: 4px solid #10b981; color: #065f46; border-radius: 8px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+
+        /* --- BOX GRID LAYOUT --- */
+        .msg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        
+        .msg-card { 
+            background-color: #ffffff; 
+            border-radius: 12px; 
+            padding: 24px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            border-top: 4px solid var(--warning); 
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            min-height: 280px; 
+        }
+        .msg-card:hover { transform: translateY(-3px); box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.1); }
+        
+        .msg-sender-info { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .avatar-circle { width: 40px; height: 40px; background-color: #fef3c7; color: var(--warning); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; }
+        .sender-name { font-weight: 600; color: var(--text-main); font-size: 16px; }
+        
+        .msg-meta { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+        .msg-meta i { width: 16px; color: var(--text-muted); }
+        
+        .msg-body { font-size: 14px; color: #334155; line-height: 1.6; background-color: #f8fafc; padding: 14px; border-radius: 8px; margin-bottom: 16px; border: 1px dashed var(--border-color); word-wrap: break-word; min-height: 80px; }
+        
+        /* --- BOTTOM DELETE BUTTON --- */
+        .btn-delete-container { display: flex; justify-content: flex-end; width: 100%; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: auto; }
+        .btn-delete { background-color: #fef2f2; color: var(--danger); border: 1px solid #fee2e2; padding: 8px 16px; border-radius: 8px; cursor: pointer; text-decoration: none; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+        .btn-delete:hover { background-color: var(--danger); color: #ffffff; border-color: var(--danger); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
+
+        .empty-state { text-align: center; padding: 60px 24px; color: var(--text-muted); grid-column: 1 / -1; }
+        .empty-state i { font-size: 45px; margin-bottom: 15px; color: #cbd5e1; }
+    </style>
+</head>
+<body>
+
+    <!-- sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>JobDetector Admin</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/admin"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+            <li><a href="/admin/users"><i class="fa-solid fa-users"></i> Registered Users</a></li>
+            <li><a href="/admin/job-logs"><i class="fa-solid fa-file-invoice"></i> Analysis Logs</a></li>
+            <li class="active"><a href="/admin/messages"><i class="fa-solid fa-envelope"></i> Contact Enquiries</a></li>
+            <li><a href="/admin/settings"><i class="fa-solid fa-gear"></i> System Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- main Content -->
+    <main class="main-content">
+        <header class="header">
+            <h1><i class="fa-solid fa-envelope"></i> Contact Enquiries</h1>
+        </header>
+
+        <!-- Alert Messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for message in messages %}
+                        <div class="flash-item"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Message Grid -->
+        <div class="msg-grid">
+            {% for msg in contacts %}
+             <div class="msg-card">
+                <div>
+                    <div class="msg-sender-info">
+                        <div class="avatar-circle">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="sender-name">{{ msg.name }}</div>
+                    </div>
+                    
+                    <div class="msg-meta">
+                        <div><i class="fa-regular fa-envelope"></i> {{ msg.email }}</div>
+                        <div style="margin-top: 4px;"><i class="fa-regular fa-clock"></i> {{ msg.submitted_at }}</div>
+                    </div>
+                    
+                    <div class="msg-body">
+                        "{{ msg.message }}"
+                    </div>
+                </div>
+                
+                <div class="btn-delete-container">
+                    <a href="/admin/delete_message/{{ msg.id }}" class="btn-delete" onclick="return confirm('⚠️ Delete this enquiry permanently?')">
+                        <i class="fa-solid fa-trash-can"></i> Delete Message
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fa-solid fa-envelope-open-text"></i>
+                <p>No contact enquiries found in the database.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+</body>
+</html>
