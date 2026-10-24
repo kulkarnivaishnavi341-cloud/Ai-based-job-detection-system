@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://jsdelivr.net">
+<title>AI Fake Job & Internship Detection System</title>
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        color: #333;
+    }
+
+    /* ================= NAVBAR ================= */
+
+    .navbar {
+        background: #182848;
+        color: white;
+        padding: 18px 50px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .navbar h2 {
+        font-size: 21px;
+    }
+
+    .navbar-links {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-links a {
+        color: white;
+        text-decoration: none;
+        margin-left: 25px;
+        font-size: 15px;
+    }
+
+    .navbar-links a:hover {
+        color: #00d4ff;
+    }
+
+    /* ================= HERO ================= */
+
+    .hero {
+        min-height: 200px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+
+        padding: 60px 20px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #182848,
+                #243b65
+            );
+
+        color: white;
+    }
+
+    .hero-content {
+        max-width: 850px;
+    }
+
+    .hero h1 {
+        font-size: 46px;
+        line-height: 1.2;
+        margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+        color: #00d4ff;
+    }
+
+    .hero p {
+        font-size: 18px;
+        line-height: 1.7;
+        color: #e5e5e5;
+        margin-bottom: 30px;
+    }
+
+    /* ================= BUTTONS ================= */
+
+    .hero-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-block;
+
+        padding: 14px 28px;
+
+        border-radius: 8px;
+
+        text-decoration: none;
+
+        font-weight: bold;
+
+        font-size: 16px;
+
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: white;
+        color: #182848;
+        border: none;
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn:hover {
+        opacity: 0.85;
+    }
+
+    /* ================= SECTION ================= */
+
+    .section {
+        width: 90%;
+        max-width: 1100px;
+        margin: 60px auto;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .section-title h2 {
+        color: #182848;
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .section-title p {
+        color: #666;
+    }
+
+    /* ================= FEATURES ================= */
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+    }
+
+    .feature-card {
+        background: white;
+
+        padding: 30px;
+
+        border-radius: 12px;
+
+        text-align: center;
+
+        box-shadow:
+            0 5px 20px rgba(0,0,0,0.08);
+
+        transition: 0.3s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+
+        box-shadow:
+            0 8px 25px rgba(0,0,0,0.12);
+    }
+
+    .feature-icon {
+        font-size: 42px;
+        margin-bottom: 15px;
+    }
+
+    .feature-card h3 {
+        color: #182848;
+        margin-bottom: 12px;
+    }
+
+    .feature-card p {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    /* ================= HOW IT WORKS ================= */
+
+    .steps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .step {
+        background: white;
+
+        padding: 25px;
+
+        border-radius: 12px;
+
+        text-align: center;
+
+        box-shadow:
+            0 5px 15px rgba(0,0,0,0.07);
+    }
+
+    .step-number {
+        width: 45px;
+        height: 45px;
+
+        margin: 0 auto 15px;
+
+        border-radius: 50%;
+
+        background: #182848;
+        color: white;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .step h3 {
+        color: #182848;
+        margin-bottom: 10px;
+    }
+
+    .step p {
+        color: #666;
+        line-height: 1.5;
+    }
+
+    /* ================= TECHNOLOGY ================= */
+
+    .technology {
+        display: flex;
+        justify-content: center;
+
+        gap: 15px;
+
+        flex-wrap: wrap;
+    }
+
+    .tech {
+        background: white;
+
+        padding: 15px 25px;
+
+        border-radius: 8px;
+
+        box-shadow:
+            0 4px 12px rgba(0,0,0,0.07);
+
+        font-weight: bold;
+
+        color: #182848;
+    }
+
+    /* Analysis form moved to analyze.html */
+
+    /* ================= CTA ================= */
+
+    .cta {
+        background: #182848;
+
+        color: white;
+
+        text-align: center;
+
+        padding: 55px 20px;
+
+        margin-top: 60px;
+    }
+ .hero-icon {
+            font-size: 2rem; 
+            color: green;    
+        }
+    .cta h2 {
+        font-size: 30px;
+        margin-bottom: 12px;
+    }
+
+    .cta p {
+        color: #ddd;
+
+        margin-bottom: 25px;
+
+        font-size: 17px;
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer {
+        background: #111c35;
+
+        color: white;
+
+        text-align: center;
+
+        padding: 25px;
+    }
+
+    footer p {
+        margin: 5px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 900px) {
+
+        .features {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .steps {
+            grid-template-columns: 1fr 1fr;
+        }
+
+    }
+
+    @media (max-width: 650px) {
+
+        .navbar {
+            flex-direction: column;
+
+            gap: 12px;
+
+            padding: 15px 20px;
+        }
+
+        .navbar-links {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .navbar-links a {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+        }
+
+        .hero p {
+            font-size: 16px;
+        }
+
+        .features {
+            grid-template-columns: 1fr;
+        }
+
+        .steps {
+            grid-template-columns: 1fr;
+        }
+
+        .analysis-box {
+            padding: 22px;
+        }
+
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="navbar"> 
+<h2> 🤖 AI Fake Job Detector </h2> 
+<div class="navbar-links"> 
+    <a href="/"> 🏠Home </a>
+    <a href="/about">ℹ️ About Us</a>
+    <a href="/analyze"> 🔍Analyze Job </a>
+     <a href="/dashboard"> 🕒Dashboard </a> 
+     <a href="/history"> ⌛History </a>
+     <a href="/contact">📞 Contact </a> 
+
+      {% if session.get("user_id") %}
+     <a class=" btn btn-primary ms-2 nav-link text-danger" href="/logout" style="color: #df0d0d;"> Logout </a>
+     {% else %}
+     <a class="btn btn-primary ms-2" href="/login" style="color: #df0d0d;"> Login </a>
+     {% endif %}
+    </div> 
+</nav>
+
+<!-- =====================================================
+     FLASH MESSAGES
+===================================================== -->
+
+<div class="container mt-5">
+
+    {% with messages = get_flashed_messages(
+        with_categories=true
+    ) %}
+
+        {% for category, message in messages %}
+
+            <div class="alert alert-{{ category }} alert-dismissible fade show">
+
+                {{ message }}
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endwith %}
+
+</div>
+
+<!-- =========================================================
+     HERO SECTION
+========================================================= -->
+
+<section class="hero">
+
+
+<div class="hero-content">
+   <h1 class="display-2 fw-bold">
+
+                    About Us-
+                    <span class="text-primary">
+
+                        AI Fake Job Detector
+
+                    </span>
+
+                </h1>
+    <p class="lead">Empowering job seekers with advanced AI 
+        technology to fight recruitment fraud.</p>
+    
+    
+</div>
+</section>
+
+<!-- =========================================================
+     FEATURES
+========================================================= -->
+
+<section class="section">
+<div class="container my-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <div class="section-title">
+
+            <h2 class="fw-bold" style="color: #182848;">🎯Our Mission</h2>
+            <p>Smart AI Detection for a Fraud-Free Job Market.</p><br>
+            <div class="feature-card"><p class="lead text-muted">In the digital age, fake job postings and internship scams are rising rapidly, targeting vulnerable students and job seekers.</p>
+            <p><strong>AI Fake Job Detector</strong> is an advanced system designed to identify and filter out fraudulent job offers before they can harm anyone. Using machine learning algorithms, our system analyzes descriptions, requirements, and structural anomalies to provide a real-time risk score.</p>
+        </div>
+        </div>
+        
+    </div>
+</div>
+</div>
+
+<div class="section-title">
+
+    <h2>
+        🛡️ Why Use Our System?
+    </h2>
+
+    <p>
+        Identify suspicious job postings before applying.
+    </p>
+
+</div>
+
+
+<div class="features">
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            🤖
+        </div>
+
+        <h3>
+            AI-Powered Detection
+        </h3>
+
+        <p>
+            Uses a trained Random Forest Machine Learning
+            model to classify job postings as genuine
+            or potentially fraudulent.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            🔍
+        </div>
+
+        <h3>
+            Suspicious Indicators
+        </h3>
+
+        <p>
+            Detects warning signs such as registration fees,
+            payment requests, guaranteed jobs, OTP requests
+            and other suspicious patterns.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            🛡️
+        </div>
+
+        <h3>
+            Safety Recommendations
+        </h3>
+
+        <p>
+            Provides recommendations to help users avoid
+            financial loss and protect sensitive information.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            📊
+        </div>
+
+        <h3>
+            Risk Score
+        </h3>
+
+        <p>
+            Generates a risk score and categorizes the
+            job as Low, Medium or High Risk.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            💾
+        </div>
+
+        <h3>
+            Analysis History
+        </h3>
+
+        <p>
+            Stores previous job analysis results using
+            SQLite database for future reference.
+        </p>
+
+    </div>
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            🎓
+        </div>
+
+        <h3>
+            Job & Internship
+        </h3>
+
+        <p>
+            Designed to analyze both job postings and
+            internship opportunities.
+        </p>
+
+    </div>
+
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     HOW IT WORKS
+========================================================= -->
+
+<section class="section">
+
+
+<div class="section-title">
+
+    <h2>
+        ⚙️ How It Works
+    </h2>
+
+    <p>
+        Simple four-step job verification process.
+    </p>
+
+</div>
+
+
+<div class="steps">
+
+
+    <div class="step">
+
+        <div class="step-number">
+            1
+        </div>
+
+        <h3>
+            Enter Details
+        </h3>
+
+        <p>
+            Enter job title, company,
+            description, requirements
+            and salary.
+        </p>
+
+    </div>
+
+
+    <div class="step">
+
+        <div class="step-number">
+            2
+        </div>
+
+        <h3>
+            TF-IDF
+        </h3>
+
+        <p>
+            Job information is converted
+            into numerical features using
+            TF-IDF.
+        </p>
+
+    </div>
+
+
+    <div class="step">
+
+        <div class="step-number">
+            3
+        </div>
+
+        <h3>
+            AI Prediction
+        </h3>
+
+        <p>
+            Random Forest analyzes the
+            job information and predicts
+            potential fraud.
+        </p>
+
+    </div>
+
+
+    <div class="step">
+
+        <div class="step-number">
+            4
+        </div>
+
+        <h3>
+            Get Result
+        </h3>
+
+        <p>
+            View fake probability,
+            risk score, warnings and
+            safety recommendations.
+        </p>
+
+    </div>
+
+
+</div>
+
+
+</section>
+
+<!-- =========================================================
+     TECHNOLOGIES
+========================================================= -->
+
+<section class="section">
+
+<div class="section-title">
+
+    <h2>
+        💻 Technologies Used
+    </h2>
+
+    <p>
+        Technologies used to develop this system.
+    </p>
+
+</div>
+
+
+<div class="technology">
+
+    <div class="tech">
+        Python
+    </div>
+
+    <div class="tech">
+        Flask
+    </div>
+
+    <div class="tech">
+        Scikit-learn
+    </div>
+
+    <div class="tech">
+        TF-IDF
+    </div>
+
+    <div class="tech">
+        Random Forest
+    </div>
+
+    <div class="tech">
+        SQLite
+    </div>
+
+    <div class="tech">
+        HTML
+    </div>
+
+    <div class="tech">
+        CSS
+    </div>
+
+</div>
+
+</section>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer>
+
+<p>
+    © 2026 AI-Based Fake Job and Internship Detection System
+</p>
+
+<p>
+    Developed using Python, Flask, TF-IDF & Random Forest
+</p>
+
+</footer>
+
+</body>
+
+</html>

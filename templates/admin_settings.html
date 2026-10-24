@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - Admin Panel</title>
+    <!-- Google Fonts (Inter) & FontAwesome Icons -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --sidebar-bg: #1e293b;
+            --sidebar-hover: #334155;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #3b82f6;
+            --purple: #8b5cf6;
+            --danger: #ef4444;
+            --border-color: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; }
+
+        /* --- SIDEBAR DESIGN --- */
+        .sidebar { width: 260px; background-color: var(--sidebar-bg); color: #ffffff; display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; }
+        .sidebar-brand { padding: 24px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-brand i { color: var(--primary); }
+        .sidebar-menu { list-style: none; padding: 20px 0; flex-grow: 1; }
+        .sidebar-menu li a { display: flex; align-items: center; gap: 15px; padding: 14px 24px; color: #cbd5e1; text-decoration: none; font-weight: 500; font-size: 15px; }
+        .sidebar-menu li a:hover, .sidebar-menu li.active a { background-color: var(--sidebar-hover); color: #ffffff; }
+        .sidebar-menu li.active a { border-left: 4px solid var(--primary); padding-left: 20px; }
+        .sidebar-footer { padding: 20px 24px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .logout-btn { display: flex; align-items: center; gap: 10px; color: #ef4444; text-decoration: none; font-weight: 600; }
+
+        /* --- MAIN CONTENT AREA --- */
+        .main-content { margin-left: 260px; flex-grow: 1; padding: 40px; }
+        .header { margin-bottom: 35px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .header h1 { font-size: 28px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+        .header h1 i { color: var(--purple); }
+        
+        .flash-item { padding: 14px 20px; background-color: #ecfdf5; border-left: 4px solid #10b981; color: #065f46; border-radius: 8px; font-weight: 500; font-size: 14px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+
+        /* --- SETTINGS CONTAINERS --- */
+        .settings-container { display: flex; flex-direction: column; gap: 30px; max-width: 700px; }
+        .settings-card { background-color: #ffffff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid var(--border-color); }
+        .card-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px; text-transform: uppercase; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i { position: absolute; left: 14px; color: var(--text-muted); font-size: 16px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px 14px 12px 42px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; color: #334155; font-weight: 500; }
+        
+        .form-group input:read-only { background-color: #f1f5f9; color: #64748b; cursor: not-allowed; }
+
+        .btn-submit { background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        .btn-submit:hover { background-color: #2563eb; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+
+        /* --- DANGER ZONE STYLING --- */
+        .danger-card { border-top: 4px solid var(--danger); }
+        .danger-card .card-title { color: var(--danger); }
+        .danger-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .btn-danger { background-color: #fef2f2; color: var(--danger); border: 1px solid #fee2e2; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        .btn-danger:hover { background-color: var(--danger); color: white; border-color: var(--danger); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+    </style>
+</head>
+<body>
+
+    <!-- sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-shield-halved"></i> 
+            <span>JobDetector Admin</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/admin"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+            <li><a href="/admin/users"><i class="fa-solid fa-users"></i> Registered Users</a></li>
+            <li><a href="/admin/job-logs"><i class="fa-solid fa-file-invoice"></i> Analysis Logs</a></li>
+            <li><a href="/admin/messages"><i class="fa-solid fa-envelope"></i> Contact Enquiries</a></li>
+            <li class="active"><a href="/admin/settings"><i class="fa-solid fa-gear"></i> System Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- main Content -->
+    <main class="main-content">
+        <header class="header">
+            <h1><i class="fa-solid fa-gears"></i> System Settings</h1>
+        </header>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-item"><i class="fa-solid fa-circle-check"></i> {{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="settings-container">
+            
+            <!-- १. confirmation form -->
+            <form action="/admin/settings" method="POST" class="settings-card" style="border-top: 4px solid var(--purple);">
+                <div class="card-title"><i class="fa-solid fa-sliders"></i> App Control Panel</div>
+                
+                <div class="form-group">
+                    <label>Portal Application Name</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-window-maximize"></i>
+                        <input type="text" name="site_name" value="{{ settings.site_name }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Maintenance Mode State</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                        <select name="maintenance_mode">
+                            <option value="OFF" {% if settings.maintenance_mode == 'OFF' %}selected{% endif %}>OFF — Website is Live</option>
+                            <option value="ON" {% if settings.maintenance_mode == 'ON' %}selected{% endif %}>ON — Maintenance Banner Active</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Save Configurations</button>
+            </form>
+
+            <!-- २. system info card -->
+            <div class="settings-card" style="border-top: 4px solid var(--primary);">
+                <div class="card-title"><i class="fa-solid fa-server"></i> Technical Stack Info</div>
+                <div class="form-group">
+                    <label>ML Model & Database Target</label>
+                    <div class="input-wrapper" style="margin-bottom: 10px;">
+                        <i class="fa-solid fa-brain"></i>
+                        <input type="text" value="Random Forest Classifier Core" readonly>
+                    </div>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-database"></i>
+                        <input type="text" value="SQLite3 Engine (jobs.db)" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ३.  (Danger Zone: database reset) -->
+            <div class="settings-card danger-card">
+                <div class="card-title"><i class="fa-solid fa-radiation"></i> Danger Zone</div>
+                <p class="danger-desc">
+                    <strong>⚠️ Warning:</strong> Clicking the button below will permanently delete all <strong>users' job scanning logs</strong> and <strong>contact messages (Enquiries)</strong> from the database. This change cannot be undone!
+                </p>
+                <form action="/admin/reset_database" method="POST" onsubmit="return confirm('🚨 Final Warning!\n\nAre you sure you want to delete all job logs and messages from the database?\nUser accounts will not be deleted.')">
+                    <button type="submit" class="btn-danger"><i class="fa-solid fa-trash-flame"></i> Wipe & Reset System Data</button>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

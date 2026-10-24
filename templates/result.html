@@ -1,0 +1,722 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Job Analysis Result</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            background: #f4f7fb;
+            color: #333;
+        }
+
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+
+            background: #182848;
+
+            color: white;
+
+            padding: 18px 40px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+
+        .navbar h2 {
+            font-size: 22px;
+        }
+
+
+        .navbar a {
+
+            color: white;
+
+            text-decoration: none;
+
+            margin-left: 25px;
+
+            font-size: 15px;
+        }
+
+
+        .navbar a:hover {
+            color: #00d4ff;
+        }
+
+
+        /* ================= CONTAINER ================= */
+
+        .container {
+
+            width: 90%;
+
+            max-width: 900px;
+
+            margin: 40px auto;
+        }
+
+
+        /* ================= TITLE ================= */
+
+        .page-title {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+        }
+
+
+        .page-title h1 {
+
+            color: #182848;
+
+            margin-bottom: 8px;
+        }
+
+
+        .page-title p {
+            color: #666;
+        }
+
+
+        /* ================= RESULT CARD ================= */
+
+        .result-card {
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.10);
+
+            text-align: center;
+        }
+
+
+        /* ================= JOB INFORMATION ================= */
+
+        .job-info {
+
+            background: #f8f9fa;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            margin-bottom: 25px;
+
+            text-align: left;
+        }
+
+
+        .job-info p {
+
+            margin: 8px 0;
+
+            font-size: 16px;
+        }
+
+
+        /* ================= PREDICTION ================= */
+
+        .prediction {
+
+            font-size: 30px;
+
+            font-weight: bold;
+
+            margin: 20px 0;
+        }
+
+
+        .fake {
+
+            color: #d00000;
+        }
+
+
+        .genuine {
+
+            color: #008000;
+        }
+
+
+        /* ================= SCORE ================= */
+
+        .score-container {
+
+            margin: 25px 0;
+        }
+
+
+        .score {
+
+            font-size: 42px;
+
+            font-weight: bold;
+
+            color: #182848;
+        }
+
+
+        .score-label {
+
+            color: #666;
+
+            margin-top: 5px;
+        }
+
+
+        /* ================= RISK ================= */
+
+        .risk {
+
+            display: inline-block;
+
+            padding: 12px 30px;
+
+            border-radius: 30px;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            margin: 15px 0;
+        }
+
+
+        .high-risk {
+
+            background: #ffe0e0;
+
+            color: #d00000;
+        }
+
+
+        .medium-risk {
+
+            background: #fff0cc;
+
+            color: #b36b00;
+        }
+
+
+        .low-risk {
+
+            background: #dcf5dc;
+
+            color: #087f23;
+        }
+
+
+        /* ================= WARNING ================= */
+
+        .warning {
+
+            margin-top: 25px;
+
+            padding: 20px;
+
+            background: #fff3cd;
+
+            border-radius: 10px;
+
+            text-align: left;
+
+            color: #664d03;
+        }
+
+
+        .warning h2 {
+
+            margin-bottom: 12px;
+
+            text-align: center;
+        }
+
+
+        .warning ul {
+
+            padding-left: 25px;
+        }
+
+
+        .warning li {
+
+            margin-bottom: 8px;
+        }
+
+
+        /* ================= RECOMMENDATION ================= */
+
+        .recommendation {
+
+            margin-top: 25px;
+
+            padding: 20px;
+
+            background: #e8f4ff;
+
+            border-radius: 10px;
+
+            text-align: left;
+
+            color: #164b70;
+        }
+
+
+        .recommendation h2 {
+
+            margin-bottom: 12px;
+
+            text-align: center;
+        }
+
+
+        .recommendation ul {
+
+            padding-left: 25px;
+        }
+
+
+        .recommendation li {
+
+            margin-bottom: 8px;
+        }
+
+
+        /* ================= BUTTONS ================= */
+
+        .buttons {
+
+            margin-top: 30px;
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 15px;
+        }
+
+
+        .btn {
+
+            padding: 13px 25px;
+
+            border-radius: 7px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            display: inline-block;
+        }
+
+
+        .btn-dashboard {
+
+            background: #182848;
+
+            color: white;
+        }
+
+
+        .btn-home {
+
+            background: #ddd;
+
+            color: #333;
+        }
+
+
+        .btn:hover {
+
+            opacity: 0.85;
+        }
+
+
+        /* ================= FOOTER ================= */
+
+        footer {
+
+            text-align: center;
+
+            margin-top: 40px;
+
+            padding: 20px;
+
+            background: #182848;
+
+            color: white;
+        }
+
+
+        footer p {
+            margin: 5px;
+        }
+
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 768px) {
+
+            .navbar {
+
+                padding: 15px 20px;
+
+                flex-direction: column;
+
+                gap: 10px;
+            }
+
+
+            .navbar a {
+
+                margin-left: 10px;
+            }
+
+
+            .container {
+
+                width: 94%;
+            }
+
+
+            .result-card {
+
+                padding: 25px 18px;
+            }
+
+
+            .prediction {
+
+                font-size: 24px;
+            }
+
+
+            .score {
+
+                font-size: 35px;
+            }
+
+
+            .buttons {
+
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <div class="navbar">
+
+        <h2>
+            🤖 AI Fake Job Detector
+        </h2>
+
+
+         <a href="/"> 🏠Home </a>
+    <a href="/about">ℹ️ About Us</a>
+    <a href="/analyze"> 🔍Analyze Job </a>
+     <a href="/dashboard"> 🕒Dashboard </a> 
+     <a href="/history"> ⌛History </a>
+     <a href="/contact">📞 Contact </a> 
+
+    </div>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <div class="container">
+
+
+        <div class="page-title">
+
+            <h1>
+                🔍 AI Job Analysis Result
+            </h1>
+
+            <p>
+                Analysis completed using TF-IDF and Random Forest
+            </p>
+
+        </div>
+
+
+
+        <div class="result-card">
+
+
+            <!-- ================= JOB DETAILS ================= -->
+
+            <div class="job-info">
+
+                <p>
+                    <strong>Job Title:</strong>
+                    {{ job_title }}
+                </p>
+
+
+                <p>
+                    <strong>Company:</strong>
+                    {{ company_name }}
+                </p>
+
+            </div>
+
+
+
+            <!-- ================= PREDICTION ================= -->
+
+            {% if result == "FAKE / SUSPICIOUS" %}
+
+                <div class="prediction fake">
+
+                    🚨 {{ result }}
+
+                </div>
+
+            {% else %}
+
+                <div class="prediction genuine">
+
+                    ✅ {{ result }}
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- ================= FAKE PROBABILITY ================= -->
+
+            <div class="score-container">
+
+                <div class="score">
+
+                    {{ fake_probability }}%
+
+                </div>
+
+
+                <div class="score-label">
+
+                    Fake Probability
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= RISK SCORE ================= -->
+
+            <div class="score-container">
+
+                <div class="score">
+
+                    {{ risk_score }}%
+
+                </div>
+
+
+                <div class="score-label">
+
+                    Final Risk Score
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= RISK LEVEL ================= -->
+
+            {% if risk_level == "HIGH RISK" %}
+
+                <div class="risk high-risk">
+
+                    🔴 {{ risk_level }}
+
+                </div>
+
+            {% elif risk_level == "MEDIUM RISK" %}
+
+                <div class="risk medium-risk">
+
+                    🟠 {{ risk_level }}
+
+                </div>
+
+            {% else %}
+
+                <div class="risk low-risk">
+
+                    🟢 {{ risk_level }}
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- ================= WARNING SIGNS ================= -->
+
+            {% if reasons %}
+
+            <div class="warning">
+
+                <h2>
+                    ⚠️ Suspicious Indicators
+                </h2>
+
+
+                <ul>
+
+                    {% for reason in reasons %}
+
+                        <li>
+                            {{ reason }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% else %}
+
+            <div class="recommendation">
+
+                <h2>
+                    ✅ No Suspicious Indicators Detected
+                </h2>
+
+                <p style="text-align:center;">
+
+                    No common suspicious keywords were found
+                    in the submitted job information.
+
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+
+            <!-- ================= RECOMMENDATION ================= -->
+
+            {% if recommendation %}
+
+            <div class="recommendation">
+
+                <h2>
+                    🛡️ Safety Recommendations
+                </h2>
+
+
+                <ul>
+
+                    {% for item in recommendation %}
+
+                        <li>
+                            {{ item }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+
+
+            <!-- ================= BUTTONS ================= -->
+
+            <div class="buttons">
+
+                <a
+                    href="/dashboard"
+                    class="btn btn-dashboard"
+                >
+                    🔍 Analyze Another Job
+                </a>
+
+
+                <a
+                    href="/history"
+                    class="btn btn-home"
+                >
+                    📋 View History
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p>
+            © 2026 AI-Based Fake Job and Internship Detection System
+        </p>
+
+
+        <p>
+            Developed using Python, Flask, TF-IDF & Random Forest
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>
+
