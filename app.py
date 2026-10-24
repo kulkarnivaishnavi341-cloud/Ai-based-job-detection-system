@@ -5,6 +5,7 @@ import hashlib
 import os
 import re
 import secrets
+import shutil
 import sqlite3
 
 import joblib
@@ -20,6 +21,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Application and Paths Configuration
 # ---------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent
+IS_VERCEL = bool(os.environ.get("VERCEL"))
 
 app = Flask(
     __name__,
@@ -39,11 +41,24 @@ if not _secret:
 app.secret_key = _secret
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = IS_VERCEL  # Vercel always serves HTTPS
 
 MODEL_PATH = BASE_DIR / "random_forest_model.pkl"
 VECTORIZER_PATH = BASE_DIR / "rf_tfidf_vectorizer.pkl"
-DATABASE_PATH = BASE_DIR / "jobs.db"
 DATASET_PATH = BASE_DIR / "dataset" / "fake_job_postings.csv"
+
+# FIX 1: Vercel's file system is read-only except /tmp.
+# On Vercel the database lives in /tmp (temporary: it is wiped on cold starts).
+if IS_VERCEL:
+    DATABASE_PATH = Path("/tmp") / "jobs.db"
+    _seed_db = BASE_DIR / "jobs.db"
+    if not DATABASE_PATH.exists() and _seed_db.is_file():
+        try:
+            shutil.copy(_seed_db, DATABASE_PATH)
+        except OSError as exc:
+            print(f"WARNING: Could not copy seed database: {exc}")
+else:
+    DATABASE_PATH = BASE_DIR / "jobs.db"
 
 ADMIN_EMAIL = "admin@jobdetect.com"
 MAX_OTP_ATTEMPTS = 5
@@ -79,15 +94,28 @@ def load_pickle(path, label):
 model = load_pickle(MODEL_PATH, "Random Forest model")
 vectorizer = load_pickle(VECTORIZER_PATH, "TF-IDF vectorizer")
 
-try:
-    dataset = pd.read_csv(DATASET_PATH) if DATASET_PATH.is_file() else None
-    if dataset is None:
-        print(f"INFO: Optional dataset not found: {DATASET_PATH}")
-    else:
-        print(f"Dataset loaded: {dataset.shape}")
-except Exception as exc:
-    print(f"WARNING: Dataset could not be loaded: {exc}")
-    dataset = None
+# FIX 2: Load the reference dataset lazily (only when first needed) and only
+# the columns that are used. This keeps cold starts fast and memory low.
+_dataset_cache = {"loaded": False, "df": None}
+_DATASET_COLUMNS = {"title", "company_profile", "fraudulent"}
+
+
+def get_dataset():
+    if not _dataset_cache["loaded"]:
+        _dataset_cache["loaded"] = True
+        try:
+            if DATASET_PATH.is_file():
+                _dataset_cache["df"] = pd.read_csv(
+                    DATASET_PATH, usecols=lambda c: c in _DATASET_COLUMNS
+                )
+                print(f"Dataset loaded: {_dataset_cache['df'].shape}")
+            else:
+                print(f"INFO: Optional dataset not found: {DATASET_PATH}")
+        except Exception as exc:
+            print(f"WARNING: Dataset could not be loaded: {exc}")
+            _dataset_cache["df"] = None
+    return _dataset_cache["df"]
+
 
 # ---------------------------------------------------------------------
 # Database Control & Initialization
@@ -218,6 +246,7 @@ def get_risk_level(risk_score):
 
 
 def get_dataset_information(job_title, company_name):
+    dataset = get_dataset()
     if dataset is None:
         return {"found": False, "message": "Reference dataset is not available."}
     try:
@@ -300,6 +329,17 @@ def home():
 @app.route("/about")
 def about():
     return render_template("about.html")
+
+
+# FIX 3: /dashboard used to return "Not Found". It now sends each visitor
+# to the right page.
+@app.route("/dashboard")
+def dashboard():
+    if not login_required():
+        return redirect(url_for("login"))
+    if session.get("user") == ADMIN_EMAIL:
+        return redirect(url_for("admin_dashboard"))
+    return redirect(url_for("analyze"))
 
 
 @app.route("/contact", methods=["GET", "POST"])
@@ -403,6 +443,7 @@ def login():
                     response.set_cookie(
                         "remembered_email", email,
                         max_age=30 * 24 * 60 * 60, httponly=True, samesite="Lax",
+                        secure=IS_VERCEL,
                     )
                 else:
                     response.delete_cookie("remembered_email")
