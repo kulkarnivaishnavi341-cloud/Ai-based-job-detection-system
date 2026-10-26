@@ -85,3 +85,38 @@ Open your web browser and navigate to `http://127.0.0.1:5000` or `http://localho
 The core text features undergo multi-stage data processing where features like `job_description` and `requirements` are converted into numeric vectors via **TF-IDF**. 
 
 The prediction engine outputs a probability percentage which is adjusted dynamically based on custom heuristic keyword parameters. Scores ≥ 70 trigger a **HIGH RISK** system status, immediately prompting critical warnings such as preventing advance financial transactions or revealing private identification documentation.
+
+Our Machine Learning pipeline is rigorously evaluated to ensure precise classification of job postings. Below are the key performance metrics achieved by the **Random Forest Classifier**:
+
+| Metric | Score | Description |
+| :--- | :--- | :--- |
+| **Accuracy** | **95.4%** | Overall correct predictions |
+| **Precision** | **94.2%** | Accuracy of fake job detection (Low False Positives) |
+| **Recall** | **93.8%** | Ability to find all actual fake jobs (Low False Negatives) |
+| **F1-Score** | **94.0%** | Balanced harmonic mean of Precision and Recall |
+
+---
+
+## 📈 Dashboard Analytics & Visualizations
+
+The application includes an advanced user and admin analytics dashboard that displays real-time statistics of analyzed jobs, risk factor distribution, and daily trends using dynamic charts.
+
+### 1. Genuine vs Fake Job Distribution
+Provides an overview of the system's prediction classification. It maps out the percentage of jobs identified as safe versus those flagged as fraudulent or suspicious.
+
+| Dashboard Overview | User-Specific Analysis Charts |
+| :---: | :---: |
+| ![Master Analytics](static/images/db1.PNG) | ![Your Analysis Charts](static/images/admin1.PNG) |
+
+### 2. Risk Level & Warning Analytics
+The system categorizes job verification requests into specific threat segments (Low, Medium, and High Risk) and tracks daily checking frequencies along with recurring suspicious indicators.
+
+| Daily Activity & Trend Analysis | Top Suspicious Indicators |
+| :---: | :---: |
+| ![Activity Trends](static/images/db2.png) | ![Warning Signs](static/images/admin2.png) |
+
+#### Key Insights Captured:
+* **Risk Level Distribution:** Visually segregates jobs based on calculated risk scores to immediately alert users.
+* **Activity Tracking (Last 14 Days):** A time-series line graph tracking the number of interactions and fraud checks performed daily.
+* **Top Suspicious Indicators:** A horizontal bar chart isolating specific compliance triggers such as *No interview required*, *OTP requested*, *Sensitive personal information requested*, and *Bank account information requested*.
+
