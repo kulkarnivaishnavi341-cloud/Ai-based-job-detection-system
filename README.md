@@ -113,7 +113,7 @@ The system categorizes job verification requests into specific threat segments (
 
 | Daily Activity & Trend Analysis | Top Suspicious Indicators |
 | :---: | :---: |
-| ![Activity Trends](static/images/db2.png) | ![Warning Signs](static/images/admin2.png) |
+| ![Activity Trends](static/images/db2.PNG) | ![Warning Signs](static/images/admin2.PNG) |
 
 #### Key Insights Captured:
 * **Risk Level Distribution:** Visually segregates jobs based on calculated risk scores to immediately alert users.
