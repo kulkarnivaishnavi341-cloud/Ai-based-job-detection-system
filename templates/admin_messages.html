@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Enquiries - Admin Panel</title>
     <!-- Google Fonts & FontAwesome Icons -->
-    <link href="https://googleapis.com" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         :root {
@@ -29,7 +29,7 @@
         .sidebar-brand { padding: 24px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         .sidebar-brand i { color: var(--primary); }
         .sidebar-menu { list-style: none; padding: 20px 0; flex-grow: 1; }
-        .sidebar-menu li a { display: flex; align-items: center; gap: 15px; padding: 14px 24px; color: #cbd5e1; text-decoration: none; font-weight: 500; font-size: 15px; }
+        .sidebar-menu li a { display: flex; align-items: center; gap: 15px; padding: 14px 24px; color: #cbd5e1; text-decoration: none; font-weight: 500; font-size: 15px; transition: 0.2s; }
         .sidebar-menu li a:hover, .sidebar-menu li.active a { background-color: var(--sidebar-hover); color: #ffffff; }
         .sidebar-menu li.active a { border-left: 4px solid var(--primary); padding-left: 20px; }
         .sidebar-footer { padding: 20px 24px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
@@ -81,11 +81,48 @@
 
         .empty-state { text-align: center; padding: 60px 24px; color: var(--text-muted); grid-column: 1 / -1; }
         .empty-state i { font-size: 45px; margin-bottom: 15px; color: #cbd5e1; }
+
+        /* =========================================================
+           NEW: MODAL POPUP CSS
+           ========================================================= */
+        .modal-overlay { 
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(15, 23, 42, 0.6); z-index: 999; 
+            align-items: center; justify-content: center; backdrop-filter: blur(2px);
+        }
+        .modal-box { 
+            background: #ffffff; padding: 30px; border-radius: 12px; 
+            max-width: 400px; width: 90%; text-align: center; 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); 
+            animation: modalFadeIn 0.3s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-box i.warning-icon { 
+            font-size: 45px; color: var(--danger); margin-bottom: 15px; 
+        }
+        .modal-box h3 { color: var(--text-main); margin-bottom: 10px; font-size: 20px; font-weight: 700; }
+        .modal-box p { color: var(--text-muted); margin-bottom: 25px; font-size: 14px; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 12px; justify-content: center; }
+        .btn-cancel { 
+            background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; 
+            padding: 10px 20px; border-radius: 8px; cursor: pointer; 
+            font-weight: 600; font-size: 14px; transition: 0.2s;
+        }
+        .btn-cancel:hover { background: #e2e8f0; }
+        .btn-confirm { 
+            background: var(--danger); color: #fff; border: none; 
+            padding: 10px 20px; border-radius: 8px; cursor: pointer; 
+            font-weight: 600; font-size: 14px; transition: 0.2s;
+        }
+        .btn-confirm:hover { background: #dc2626; }
     </style>
 </head>
 <body>
 
-    <!-- sidebar -->
+    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-brand">
             <i class="fa-solid fa-shield-halved"></i>
@@ -96,14 +133,13 @@
             <li><a href="/admin/users"><i class="fa-solid fa-users"></i> Registered Users</a></li>
             <li><a href="/admin/job-logs"><i class="fa-solid fa-file-invoice"></i> Analysis Logs</a></li>
             <li class="active"><a href="/admin/messages"><i class="fa-solid fa-envelope"></i> Contact Enquiries</a></li>
-            <li><a href="/admin/settings"><i class="fa-solid fa-gear"></i> System Settings</a></li>
         </ul>
         <div class="sidebar-footer">
             <a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
         </div>
     </aside>
 
-    <!-- main Content -->
+    <!-- MAIN CONTENT -->
     <main class="main-content">
         <header class="header">
             <h1><i class="fa-solid fa-envelope"></i> Contact Enquiries</h1>
@@ -143,9 +179,10 @@
                 </div>
                 
                 <div class="btn-delete-container">
-                    <a href="/admin/delete_message/{{ msg.id }}" class="btn-delete" onclick="return confirm('⚠️ Delete this enquiry permanently?')">
+                    <!-- NEW: DELETE BUTTON OPENS MODAL -->
+                    <button class="btn-delete" onclick="openDeleteModal('{{ msg.id }}', '{{ msg.name }}')">
                         <i class="fa-solid fa-trash-can"></i> Delete Message
-                    </a>
+                    </button>
                 </div>
             </div>
             {% else %}
@@ -156,6 +193,54 @@
             {% endfor %}
         </div>
     </main>
+
+    <!-- =========================================================
+         NEW: DELETE CONFIRMATION MODAL POPUP
+         ========================================================= -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-box">
+            <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
+            <h3>Confirm Delete Message</h3>
+            <p id="deleteMessageText">Are you sure you want to permanently delete this contact enquiry? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                <!-- This form sends a POST request to the Flask backend -->
+                <form id="deleteForm" method="POST" style="margin: 0;">
+                    <button type="submit" class="btn-confirm">Yes, Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT FOR MODAL -->
+    <script>
+        function openDeleteModal(msgId, senderName) {
+            const modal = document.getElementById('deleteModal');
+            const form = document.getElementById('deleteForm');
+            const text = document.getElementById('deleteMessageText');
+            
+            // Set the action URL dynamically based on the clicked message ID
+            form.action = '/admin/delete_message/' + msgId;
+            
+            // Update the warning text to show the sender's name
+            text.innerHTML = `Are you sure you want to permanently delete the enquiry from <strong>${senderName}</strong>? This action cannot be undone.`;
+            
+            // Show the modal
+            modal.style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        // Close modal if user clicks outside of the modal box
+        window.onclick = function(event) {
+            const modal = document.getElementById('deleteModal');
+            if (event.target == modal) {
+                closeDeleteModal();
+            }
+        }
+    </script>
 
 </body>
 </html>

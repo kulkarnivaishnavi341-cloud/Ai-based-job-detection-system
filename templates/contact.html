@@ -96,6 +96,12 @@
             line-height: 1.6;
             margin-bottom: 30px;
         }
+         .btn-primary {
+        background: white;
+        color: #182848;
+        border: none;
+    }
+
 
         /* SOCIAL ICONS (गोल ग्रे बॅकग्राउंडसह) */
        /* सोशल मीडिया बॉक्सची रचना */
@@ -137,6 +143,15 @@
             text-transform: uppercase;
             margin-bottom: 10px;
             margin-top: 5px;
+        }
+ .navbar-links {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .navbar-links a {
+            margin-left: 10px;
+            margin-right: 10px;
         }
 
         .col-info p {
@@ -237,11 +252,18 @@
     <h2> 🤖 AI Fake Job Detector </h2> 
     <div class="navbar-links"> 
         <a href="/"> 🏠Home </a>
+        <a href="/about"> ℹ️ About Us </a>
         <a href="/analyze"> 🔍Analyze Job </a>
         <a href="/dashboard"> 📊Dashboard </a> 
         <a href="/history"> ⌛History </a> 
-        <a href="/about"> ℹ️ About Us </a>
         <a href="/contact"> 📞 Contact </a>
+
+         {% if session.get("user_id") %}
+     <a class=" btn btn-primary ms-2 nav-link text-danger" href="/logout" style="color: #df0d0d;"> Logout </a>
+     {% else %}
+     <a class="btn btn-primary ms-2" href="/login" style="color: #df0d0d;"> Login </a>
+     {% endif %}
+
     </div> 
 </nav>
 

@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - AI JobDetector</title>
     <!-- Google Fonts (Inter) & FontAwesome Icons -->
-    <link href="https://googleapis.com" rel="stylesheet">
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         :root {
@@ -215,6 +215,20 @@
             font-weight: 600;
             color: var(--primary);
         }
+
+        /* --- CHARTS --- */
+        .section-title { margin: 40px 0 20px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .section-title i { color: var(--primary); }
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 25px; }
+        .chart-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: 12px;
+                      padding: 22px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .chart-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .chart-card p.sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+        .chart-box { position: relative; height: 290px; }
+        .chart-empty { height: 290px; display: none; align-items: center; justify-content: center;
+                       color: var(--text-muted); font-size: 14px; border: 1px dashed var(--border-color);
+                       border-radius: 8px; }
+        @media (max-width: 520px) { .charts-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -307,7 +321,104 @@
             </a>
 
         </section>
+
+        <!-- ================= CHARTS ================= -->
+        <h2 class="section-title"><i class="fa-solid fa-chart-column"></i> Analytics</h2>
+
+        <section class="charts-grid">
+
+            <div class="chart-card">
+                <h3>Genuine vs Fake Jobs</h3>
+                <p class="sub">Result of all job analyses</p>
+                <div class="chart-box"><canvas id="predictionChart"></canvas></div>
+                <div class="chart-empty" id="predictionEmpty">No analysis data yet</div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Risk Level Distribution</h3>
+                <p class="sub">High, medium and low risk jobs</p>
+                <div class="chart-box"><canvas id="riskChart"></canvas></div>
+                <div class="chart-empty" id="riskEmpty">No analysis data yet</div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Analyses in the Last 14 Days</h3>
+                <p class="sub">Number of jobs checked per day</p>
+                <div class="chart-box"><canvas id="dailyChart"></canvas></div>
+                <div class="chart-empty" id="dailyEmpty">No analysis data yet</div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Top Suspicious Indicators</h3>
+                <p class="sub">Most frequent warning signs found</p>
+                <div class="chart-box"><canvas id="indicatorChart"></canvas></div>
+                <div class="chart-empty" id="indicatorEmpty">No suspicious indicators found yet</div>
+            </div>
+
+        </section>
     </main>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script>
+      const data = JSON.parse('{{ chart_data|tojson }}');
+
+
+        const GREEN = "#10b981", RED = "#ef4444", AMBER = "#f59e0b", BLUE = "#3b82f6", PURPLE = "#8b5cf6";
+
+        function hasData(values) { return values.some(function (v) { return v > 0; }); }
+
+        function show(canvasId, emptyId, values, build) {
+            const canvas = document.getElementById(canvasId);
+            const empty = document.getElementById(emptyId);
+            if (!hasData(values) || typeof Chart === "undefined") {
+                canvas.parentElement.style.display = "none";
+                empty.style.display = "flex";
+                if (typeof Chart === "undefined") { empty.textContent = "Chart library could not be loaded (check internet)"; }
+                return;
+            }
+            build(canvas);
+        }
+
+        show("predictionChart", "predictionEmpty", data.prediction.values, function (canvas) {
+            new Chart(canvas, {
+                type: "pie",
+                data: { labels: data.prediction.labels,
+                        datasets: [{ data: data.prediction.values, backgroundColor: [GREEN, RED], borderWidth: 2, borderColor: "#fff" }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
+            });
+        });
+
+        show("riskChart", "riskEmpty", data.risk.values, function (canvas) {
+            new Chart(canvas, {
+                type: "doughnut",
+                data: { labels: data.risk.labels,
+                        datasets: [{ data: data.risk.values, backgroundColor: [RED, AMBER, GREEN], borderWidth: 2, borderColor: "#fff" }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: "60%", plugins: { legend: { position: "bottom" } } }
+            });
+        });
+
+        show("dailyChart", "dailyEmpty", data.daily.values, function (canvas) {
+            new Chart(canvas, {
+                type: "line",
+                data: { labels: data.daily.labels,
+                        datasets: [{ label: "Analyses", data: data.daily.values, borderColor: BLUE,
+                                     backgroundColor: "rgba(59,130,246,0.15)", fill: true, tension: 0.35, pointRadius: 3 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                           scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+            });
+        });
+
+        show("indicatorChart", "indicatorEmpty", data.indicators.values, function (canvas) {
+            new Chart(canvas, {
+                type: "bar",
+                data: { labels: data.indicators.labels,
+                        datasets: [{ label: "Times detected", data: data.indicators.values, backgroundColor: PURPLE, borderRadius: 6 }] },
+                options: { indexAxis: "y", responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                           scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } }
+            });
+        });
+    </script>
 
 </body>
 </html>

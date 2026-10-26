@@ -9,12 +9,12 @@ Jinja2==3.1.6
 joblib==1.6.0
 MarkupSafe==3.0.3
 narwhals==2.26.0
-numpy==2.5.3
-pandas==3.0.6
+numpy==2.2.2
+pandas==2.2.3
 python-dateutil==2.9.0.post0
-scikit-learn==1.9.1
-scipy==1.18.1
+scikit-learn==1.6.1
+scipy==1.15.1
 six==1.17.0
 threadpoolctl==3.7.0
-tzdata==2026.5
+tzdata==2025.1
 Werkzeug==3.1.9

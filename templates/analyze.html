@@ -170,6 +170,12 @@ textarea:focus {
             gap: 12px;
             padding: 15px 20px;
         }
+         .btn-primary {
+        background: white;
+        color: #182848;
+        border: none;
+    }
+
 
         .navbar-links {
             flex-wrap: wrap;
@@ -199,7 +205,7 @@ textarea:focus {
      <a href="/history"> ⌛History </a>
      <a href="/contact">📞 Contact </a> 
 
-      {% if session.get("user_id") %}
+     {% if session.get("user_id") %}
      <a class=" btn btn-primary ms-2 nav-link text-danger" href="/logout" style="color: #df0d0d;"> Logout </a>
      {% else %}
      <a class="btn btn-primary ms-2" href="/login" style="color: #df0d0d;"> Login </a>
@@ -289,7 +295,6 @@ textarea:focus {
         <!-- JOB DESCRIPTION -->
 
         <div class="form-group">
-
             <label for="job_description">
 
                 Job Description
